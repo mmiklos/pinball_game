@@ -1,0 +1,278 @@
+<!--
+ABILITY IDEAS:
+1. SPLIT ABILITIY: have the bumper split into two bumpers by command of the user
+	this is a permanent change until the user decides to turn it off and recombine
+	the two bumpers and make one.
+	The new dual bumpers would be much smaller but provide the benefit of making two
+	slow beams when used. Control-wise, one would be controled by wsad, the other by 
+	the arrow keys.
+2. SPIN POOLS: pools spanwed by players in selected areas around the arena. The pools 
+	would spin bals, slingshotting ones that come into contact with them in a random
+	clockwise/counterclockwise)direction. The duration of the pool is unknown, but 
+	users could spawn them near themselves to protect themselves(*potentially if the 
+	spin is in the right direction)or in front of an opposing player to mess with 
+	them... or even on the spawn point to *throw* balls as soon as they spawned. 
+
+GAME IDEAS: 
+1. basic - first one to lose ends the game
+2. survival - once a player lets a certain amount of balls breach their area, they
+			lose and their area is closed. Goes until one player left
+3. pve - players work as a team to destroy objects in the arena and NOT to score on
+		each other. Means abilities will be used in different ways.
+4. all real - 'fake ball' ability becomes 'real ball' ability, no longer provides
+			its previous benefits, but many balls will be spawned very fast.
+5. spin pools only - 2v2 with only spin pools/addrenaline/fake-ball on an elongated map.
+6. team play - circular arena with two small borders on the 0-degree and 180-degree
+				spots of the circle to separate the border zones. Bumpers should prolly
+				be able to pass through each other to quell rages. ideall for 2v2 but
+				could support 3v3 or 4v4 or even maybe a peace-sign-like arena for a 
+				3-way battle. 
+7. solo - a training like map where a player needs to survive for a long period of time
+		to rack up points and achivements throughout the game. Should be built to support
+		single player ideals, ie. 'checkpoints', when a player gets certain achivements 
+		they are permanent to his/her account and provide their benefit when they begin a 
+		solo game again from the beginning. 
+		
+TODO: 	
+implement fake ball ability
+add a win/lose condition
+add a point system for win/loss
+add a point reward system for surviving
+		
+
+-->
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+			<script src="http://code.jquery.com/jquery-latest.js"></script>
+			<script type="text/plain" src="pinballsheet_fixnumbers.json"></script>
+			<script type="text/javascript" src="Box2dWeb-2.1.a.3.min.js"></script>
+			<script type="text/javascript" src="inheritance.js"></script>
+			<script type="text/javascript" src="classDrawers.js"></script>
+			<script type="text/javascript" src="inputEvents.js"></script>
+			<script type="text/javascript" src="gameEngine.js"></script>
+			<script type="text/javascript" src="entities.js"></script>
+			<script type="text/javascript" src="PhysicsEngineClass.js"></script>
+		<title>Pinabll Game</title>
+<script type="text/javascript">
+	var canvas_background = null;
+	var context = null;
+	var SCALE = null;
+	var canvas = null;
+	var context2 = null;
+	var Background_Image = new Image();
+	
+	var setup = function() {
+		var body = document.getElementById("body");
+		var canvas = document.createElement("canvas");
+		var context = canvas.getContext("2d");
+		this.context = context;
+	
+		var canvas2 = document.createElement("canvas");
+		var context2 = canvas.getContext("2d");
+		this.context2 = context2;
+		
+		canvasWidth=window.innerWidth;
+		canvasHeight=window.innerHeight;
+		
+		if(canvasWidth>canvasHeight){
+			canvas.width = canvasHeight;
+			canvas.height = canvasHeight;
+			$("#container").css({"width":canvasHeight+"px","height":canvasHeight+"px"})
+		}else{
+			canvas.width = canvasWidth;
+			canvas.height = canvasWidth;
+			$("#container").css({"width":canvasWidth+"px","height":canvasWidth+"px"})
+		}
+		canvas2.width = canvas.width;
+		canvas2.height = canvas.height
+		
+		this.canvas_background = canvas;
+		this.canvas = canvas2;
+		this.SCALE = this.canvas.width//1
+		$('#container').css("margin","auto");
+		document.getElementById('container').appendChild(canvas);
+		document.getElementById('container').appendChild(canvas2);
+		for( i=0; i<document.getElementsByTagName("canvas").length; i++ ){
+			document.getElementsByTagName("canvas")[i].setAttribute("id","cnvs"+i);
+			$('#cnvs'+i).css({"margin-right":-canvas.width,"position":"relative","float":"left","z-index":i});
+		}
+		document.getElementById("cnvs1").setAttribute("tabindex",1);
+		$('#score').css({"position":'absolute','left':'0', 'top':'0px','border':'1px solid black','margin':'0px','width':'100px','height':canvas.height*0.99});
+		$('#timer').html('Timer: ');
+		
+		
+		
+		xhrGet("../PinballGame/pinballsheet_fixnumbers.json", function(){
+			parseJSON = JSON.parse(this.responseText);
+			gSpriteSheet.parseAtlasDefinition(this.responseText);
+			return parseJSON;
+		});
+		
+		var img = new Image();
+		var pngImg = new Image();
+		/////////////////////////////
+		img.onload = onImageLoad();
+		pngImg.onload = onImageLoad();
+		/////////////////////////////////////////////////////
+		img.src = "../PinballGame/images/playingfield-image.png";
+		pngImg.src = "../PinballGame/pinballsheet_fixnumbers.png";
+		
+		gSpriteSheet.load(pngImg.src);
+		Background_Image = img;
+		
+		gGameEngine.setup();
+	};
+	var onImageLoad = function(){
+		console.log("image loaded ");
+	};
+	var xhrGet = function(requireURI, callback){
+		var xhr = new XMLHttpRequest();
+		xhr.open("GET", requireURI, true);
+		xhr.onload = callback;
+		xhr.send();
+	}
+</script>
+	</head>
+	<body id="body" style="margin:0;border:0;>
+		<div id="BOX" style="width:100%;height:100%;">
+			<div id="container"></div>
+		</div>
+		<div id="score">
+			<div id="timer"></div>
+			<div id="life"></div>
+			<div id="coins"></div>
+			<div id="multiplier"></div>
+			<div id="pinballs"></div>
+			<div id="final"></div>
+		</div>
+		<span id="hidden"></span>
+<script type="text/javascript">
+	setup();
+	$(window).load(function(){
+		console.log("loading now");
+			gPhysicsEngine.listen();
+			gPhysicsEngine.deadzone();
+			
+			var bumper = gGameEngine.spawnEntity('Bumper');	
+			var ramp = gGameEngine.spawnEntity('Power One');
+			var shield = gGameEngine.spawnEntity('Power Two');
+			var addrenaline = gGameEngine.spawnEntity('Power Three');
+			var energy = gGameEngine.spawnEntity('Power Four');
+			var fake = gGameEngine.spawnEntity('Power Five');
+			var hide = gGameEngine.spawnEntity('Power Six');
+			var edge = gGameEngine.spawnEntity('Edge');
+
+			var e1 = gGameEngine.entities[7].entityDef;
+				e1.vert1.x = canvas.width*0.65;
+				e1.vert1.y = canvas.height*0.80;
+				e1.vert2.x = canvas.width*0.80;
+				e1.vert2.y = canvas.width*0.65;
+			var BREdge = gPhysicsEngine.addBody(edge.entityDef);
+			var e2 = gGameEngine.entities[7].entityDef;
+				e2.vert1.x = canvas.width*0.20;
+				e2.vert1.y = canvas.height*0.65;
+				e2.vert2.x = canvas.width*0.35;
+				e2.vert2.y = canvas.width*0.80;
+			var BLEdge = gPhysicsEngine.addBody(edge.entityDef);
+			var e3 = gGameEngine.entities[7].entityDef;
+				e3.vert1.x = canvas.width*0.65;
+				e3.vert1.y = canvas.height*0.20;
+				e3.vert2.x = canvas.width*0.80;
+				e3.vert2.y = canvas.width*0.35;
+			var TREdge = gPhysicsEngine.addBody(edge.entityDef);
+			var e4 = gGameEngine.entities[7].entityDef;
+				e4.vert1.x = canvas.width*0.20;
+				e4.vert1.y = canvas.height*0.35;
+				e4.vert2.x = canvas.width*0.35;
+				e4.vert2.y = canvas.width*0.20;
+			var TLEdge = gPhysicsEngine.addBody(edge.entityDef);			
+			var e5 = gGameEngine.entities[7].entityDef;
+				e5.vert1.x = canvas.width*0.35;
+				e5.vert1.y = canvas.height*0.20;
+				e5.vert2.x = canvas.width*0.65;
+				e5.vert2.y = canvas.width*0.20;
+			var TEdge = gPhysicsEngine.addBody(edge.entityDef);
+			var e6 = gGameEngine.entities[7].entityDef;
+				e6.vert1.x = canvas.width*0.20;
+				e6.vert1.y = canvas.height*0.35;
+				e6.vert2.x = canvas.width*0.20;
+				e6.vert2.y = canvas.width*0.65;
+			var LEdge = gPhysicsEngine.addBody(edge.entityDef);
+			var e7 = gGameEngine.entities[7].entityDef;
+				e7.vert1.x = canvas.width*0.80;
+				e7.vert1.y = canvas.height*0.35;
+				e7.vert2.x = canvas.width*0.80;
+				e7.vert2.y = canvas.width*0.65;
+			var REdge = gPhysicsEngine.addBody(edge.entityDef);
+					
+			
+			context.drawImage(Background_Image, 0, 0, canvas_background.width, canvas_background.height);
+			//drawSprite(bumper.entityDef.id, canvas.width*0.35,canvas.height*0.783, canvas.width*0.09, canvas.height*0.02);
+			drawSprite(ramp.entityDef.id,canvas.width*0.25,canvas.height*0.8, canvas.width*0.1, canvas.height*0.1);
+			drawSprite(shield.entityDef.id,canvas.width*0.45,canvas.height*0.8, canvas.width*0.1, canvas.height*0.1);
+			drawSprite(addrenaline.entityDef.id,canvas.width*0.65,canvas.height*0.8, canvas.width*0.1, canvas.height*0.1);
+			drawSprite(energy.entityDef.id,canvas.width*0.35,canvas.height*0.9, canvas.width*0.1, canvas.height*0.1);
+			drawSprite(fake.entityDef.id,canvas.width*0.45,canvas.height*0.9, canvas.width*0.1, canvas.height*0.1);
+			drawSprite(hide.entityDef.id,canvas.width*0.55,canvas.height*0.9, canvas.width*0.1, canvas.height*0.1);	
+
+			bumper.entityDef.halfHeight = canvas.height*0.01;
+			bumper.entityDef.halfWidth = canvas.width*0.045;
+			gGameEngine.setSpawnPoint(bumper, canvas.width*0.35, canvas.height*0.783);
+			var bumperObj = gPhysicsEngine.addBody(bumper.entityDef);
+			bumperObj.SetUserData("player");
+			console.log(bumperObj);
+			gGameEngine.entities[0].body = bumperObj;	
+		gPhysicsEngine.DebugDrawer();
+		setInterval(function(){	
+		//for(var i=0; i<4; i++){
+			/*if (gGameEngine.entities[11] == null){
+				var pinball = gGameEngine.spawnEntity('pinball');
+				var pinballObj = gPhysicsEngine.addBody(pinball.entityDef);
+				gGameEngine.entities[11].body = pinballObj;
+				gPhysicsEngine.initializeVelocity(pinballObj);
+			} else {
+				gPhysicsEngine.increaseVelocity(gGameEngine.entities[11].body);
+			}*/
+			if (gInput.actions[gInput.bindings[65]] || gInput.actions[gInput.bindings[37]]){
+				gPhysicsEngine.bumperMovementLeft(gGameEngine.entities[0].body);
+			}else if(gInput.actions[gInput.bindings[39]] || gInput.actions[gInput.bindings[68]]){
+				gPhysicsEngine.bumperMovementRight(gGameEngine.entities[0].body);
+			}else//(!(gInput.actions[gInput.bindings[65]] || gInput.actions[gInput.bindings[37]] || gInput.actions[gInput.bindings[39]] || gInput.actions[gInput.bindings[68]]))
+			{
+				gPhysicsEngine.bumperMovementStop(gGameEngine.entities[0].body);
+			}
+			for(var i=0; i<gGameEngine.pinballs.length; i++){
+					gPhysicsEngine.increaseVelocity(gGameEngine.pinballs[i].body);
+				}
+			if (gEntity._killed){
+					var pinball = gGameEngine.spawnEntity('pinball');
+					var pinballObj = gPhysicsEngine.addBody(pinball.entityDef);
+					gPhysicsEngine.initializeVelocity(pinballObj);
+					gGameEngine.pinballs[gGameEngine.pinballs.length-1].body = pinballObj;
+					gEntity._killed = false;
+			}
+			gGameEngine.update();
+			$('#life').html('Life: '+gGameEngine.pointSystem);
+			$('#coins').html('Points: '+Math.round(gGameEngine.coinSystem));
+			$('#multiplier').html('Multiplier: '+gGameEngine.multiply);
+			if(gGameEngine.pointSystem>0){
+				$('#pinballs').html('Pinballs :'+gGameEngine.pinballs.length);
+			}
+		//}
+		}, 1000/60);
+		setInterval( function(){
+				var pinball = gGameEngine.spawnEntity('pinball');
+				var pinballObj = gPhysicsEngine.addBody(pinball.entityDef);
+				gPhysicsEngine.initializeVelocity(pinballObj);
+				gGameEngine.pinballs[gGameEngine.pinballs.length-1].body = pinballObj;
+		}, 10*1000)
+		
+				
+			
+	});
+</script>
+
+	</body>
+</html>
