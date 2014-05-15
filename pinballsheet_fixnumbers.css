@@ -1,0 +1,62 @@
+/* ----------------------------------------------------
+   created with http://www.texturepacker.com 
+   ----------------------------------------------------
+   $TexturePacker:SmartUpdate:5edf91b90970cc98ef0d12203f36cae6$
+   ----------------------------------------------------
+
+   usage: <span class="{-spritename-} sprite"></span>
+
+   replace {-spritename-} with the sprite you like to use
+
+*/
+
+.sprite {display:inline-block; overflow:hidden; background-repeat: no-repeat;background-image:url(../PinballGame/pinballsheet_fixnumbers.png);}
+
+.twoslow {width:108px; height:29px; background-position: -1102px -33px}
+.threeslow {width:108px; height:29px; background-position: -992px -33px}
+.fourslow {width:108px; height:29px; background-position: -882px -33px}
+.Addrenaline_icon {width:72px; height:72px; background-position: -1656px -33px}
+.EAEtemplate {width:108px; height:29px; background-position: -772px -33px}
+.EGAEG {width:108px; height:29px; background-position: -662px -33px}
+.EGStemplate {width:108px; height:29px; background-position: -552px -33px}
+.ESAEtemplate {width:108px; height:29px; background-position: -442px -33px}
+.ESGtemplate {width:108px; height:29px; background-position: -332px -33px}
+.EStemplate {width:108px; height:29px; background-position: -222px -33px}
+.Energy_Icon {width:72px; height:72px; background-position: -1582px -33px}
+.Fake_Ball_icon {width:72px; height:72px; background-position: -1508px -33px}
+.GEStemplate {width:108px; height:29px; background-position: -112px -33px}
+.GETemplate {width:108px; height:29px; background-position: -2px -33px}
+.GGtemplate {width:108px; height:29px; background-position: -1872px -2px}
+.GSEtemplate {width:108px; height:29px; background-position: -1762px -2px}
+.Hide_icon {width:72px; height:72px; background-position: -1434px -33px}
+.SEAEtemplate {width:108px; height:29px; background-position: -1652px -2px}
+.SEAStemplate {width:108px; height:29px; background-position: -1542px -2px}
+.SEGtemplate {width:108px; height:29px; background-position: -1432px -2px}
+.SEtemplate {width:108px; height:29px; background-position: -1322px -2px}
+.SGEtemplate {width:108px; height:29px; background-position: -1212px -2px}
+.Slow_Beam_Icon {width:72px; height:72px; background-position: -1360px -33px}
+.growth_icon {width:101px; height:101px; background-position: -1730px -33px}
+.number3 {width:600px; height:600px; background-position: -1206px -1340px}
+.number4 {width:600px; height:600px; background-position: -604px -1071px}
+.number5 {width:600px; height:600px; background-position: -2px -1028px}
+.number6 {width:600px; height:600px; background-position: -1206px -738px}
+.number7 {width:600px; height:600px; background-position: -604px -469px}
+.number8 {width:600px; height:600px; background-position: -2px -426px}
+.number9 {width:600px; height:600px; background-position: -1216px -136px}
+.paddle_default {width:200px; height:200px; background-position: -2px -64px}
+.quarter-Game-Board {width:504px; height:360px; background-position: -710px -107px}
+.quarter-Game-Board {width:504px; height:360px; background-position: -204px -64px}
+.ramp_icon {width:72px; height:72px; background-position: -1286px -33px}
+.rank10rainbow {width:108px; height:29px; background-position: -1102px -2px}
+.rank11goldplatedrainbow {width:108px; height:29px; background-position: -992px -2px}
+.rank1redpaddle {width:108px; height:29px; background-position: -882px -2px}
+.rank2orangepaddle {width:108px; height:29px; background-position: -772px -2px}
+.rank3yellowpaddle {width:108px; height:29px; background-position: -662px -2px}
+.rank4greenpaddle {width:108px; height:29px; background-position: -552px -2px}
+.rank5bluepaddle {width:108px; height:29px; background-position: -442px -2px}
+.rank6indigo {width:108px; height:29px; background-position: -332px -2px}
+.rank7violet {width:108px; height:29px; background-position: -222px -2px}
+.rank8black {width:108px; height:29px; background-position: -112px -2px}
+.rank9white {width:108px; height:29px; background-position: -2px -2px}
+.shield_icon {width:72px; height:72px; background-position: -1212px -33px}
+.slow_beam {width:29px; height:108px; background-position: -1982px -2px}

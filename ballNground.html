@@ -1,0 +1,142 @@
+<html>
+<head>
+    <title>Example</title>
+</head>
+<body style="margin:0; padding:0;">
+<canvas id="canvas" width="600" height="420" style="background-color:#333333;" ></canvas>
+</body>
+<script type="text/javascript" src="Box2dWeb-2.1.a.3.min.js"></script>
+<script type="text/javascript">
+		
+		var    b2Vec2 = Box2D.Common.Math.b2Vec2
+		,      b2BodyDef = Box2D.Dynamics.b2BodyDef
+		,      b2Body = Box2D.Dynamics.b2Body
+		,      b2FixtureDef = Box2D.Dynamics.b2FixtureDef
+		,      b2World = Box2D.Dynamics.b2World
+		,      b2PolygonShape = Box2D.Collision.Shapes.b2PolygonShape
+		,      b2CircleShape = Box2D.Collision.Shapes.b2CircleShape
+		,      b2RevoluteJointDef = Box2D.Dynamics.Joints.b2RevoluteJointDef
+		,      b2MouseJointDef =  Box2D.Dynamics.Joints.b2MouseJointDef
+		,      b2DebugDraw = Box2D.Dynamics.b2DebugDraw
+		,      b2Fixture = Box2D.Dynamics.b2Fixture
+		,      b2AABB = Box2D.Collision.b2AABB;
+
+
+var world = new b2World(new b2Vec2(0,10), true);
+
+
+edge = {
+	type: 'static',
+	position: {x: -4, y: 0},
+	shape: 'edge',
+	vert1: {x: 3, y: 3},
+	vert2: {x: 7, y: 9}
+}
+
+edge2 = {
+	type: 'static',
+	position: {x: 18, y: 0},
+	shape: 'edge',
+	vert1: {x: 3, y: 3},
+	vert2: {x: -1, y: 9}
+}
+
+ball = {
+	type: 'dynamic',
+	position: {x: 3, y:1},
+	shape: 'circle',
+	radius: 1,
+}
+
+box = {
+	type: 'kinematic',
+	position: {x: 10, y: 10},
+	shape: 'box',
+	halfWidth: 8,
+	halfHeight: 1,
+}
+		
+	function addBody(entityDef) {
+		var bodyDef = new b2BodyDef();
+		
+		if(entityDef.type == 'static'){
+			bodyDef.type = b2Body.b2_staticBody;
+		}else if(entityDef.type == 'kinematic'){
+			bodyDef.type = b2Body.b2_kinematicBody;
+		}else{//dynamic
+			bodyDef.type = b2Body.b2_dynamicBody;
+		}
+		
+		
+		bodyDef.position.x = entityDef.position.x;
+		bodyDef.position.y = entityDef.position.y;
+		
+		var fixDef = new b2FixtureDef();
+		
+		//above uses these parameters only for dynamic body
+			fixDef.density = 50.0;
+			fixDef.friction = 0.0;
+			fixDef.restitution = 1.0;
+		
+		
+		var body = world.CreateBody(bodyDef);
+		
+		if(entityDef.shape == 'circle'){
+			//radius
+			var shape = new b2CircleShape(entityDef.radius);
+			body.SetAngle(Math.PI*2*Math.random());
+			fixDef.shape = shape;
+			fixDef.shape.b2CircleShape(entityDef.radius);
+		}else if (entityDef.shape == 'box'){
+			var shape = new b2PolygonShape();
+			fixDef.shape = shape;
+			fixDef.shape.SetAsBox(entityDef.halfWidth, entityDef.halfHeight);
+		}else if(entityDef.shape = 'edge'){
+			console.log('edge');
+			var shape = new b2PolygonShape();
+			fixDef.shape = shape;
+			fixDef.shape.SetAsEdge(new b2Vec2(entityDef.vert1.x, entityDef.vert1.y), new b2Vec2(entityDef.vert2.x, entityDef.vert2.y))
+		}
+		console.log(body);
+		body.CreateFixture(fixDef);
+		return body;
+	
+	};
+		
+	addBody(edge);
+	addBody(edge2);
+	addBody(box);
+	addBody(ball);
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		var debugDraw = new b2DebugDraw();
+		debugDraw.SetSprite ( document.getElementById ("canvas").getContext ("2d"));
+		debugDraw.SetDrawScale(30);     //define scale
+		debugDraw.SetFillAlpha(0.3);    //define transparency
+		debugDraw.SetLineThickness(1.0);
+		debugDraw.SetFlags(b2DebugDraw.e_shapeBit | b2DebugDraw.e_jointBit);
+		world.SetDebugDraw(debugDraw);
+		
+		window.setInterval(update,1000/60);
+		
+		function update() {
+			world.Step(1 / 60, 10, 10);
+			world.DrawDebugData();
+			world.ClearForces();
+		};
+		
+    </script>

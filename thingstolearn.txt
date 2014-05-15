@@ -1,0 +1,45 @@
+Ken Blanchard’s Know Can Do
+
+3d limitations
+-WebGL(inconsistent in browsers)
+-3D CSS transforms
+
+3D CSS
+CSS Custom Filters
+	- OpenGL ES shading language
+
+Audio
+	High latency
+	No effects
+	Can't Access data
+	Good for Background Music
+Web Audio
+	Based on OpenAL
+	Low-latency
+	Procssing/effects
+Pointer Lock
+	Cursor cant be followed out of window
+	Pointer Lock API 
+		-Hides Cursor
+		-Requires FUll Screen
+		-New movementX/movementY property
+Gamepad Limitations
+Need to use Gamepad API
+Offline Storage Limitations
+	localStoarage (html5) ~5MB
+	JS objects ~50MB
+Cloud Storage
+	Permanent
+	Javascript API
+	Save data or realtime broadcasting
+	(firebase software)
+Video Stream
+	capture frams
+	record video
+	realtime effects
+	movement recognition
+	(navigator.getUserMedia({video:true}, gotVideo);
+function gotVideo(stream) {
+	var webcam = window.URL. ....
+	}
+Audio Stream not yet supported, but will be in future

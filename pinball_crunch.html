@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+			<script src="http://code.jquery.com/jquery-latest.js"></script>
+			<script type="text/plain" src="pinballsheet_fixnumbers.json"></script>
+			<script type="text/javascript" src="Box2dWeb-2.1.a.3.min.js"></script>
+			<script type="text/javascript" src="inheritance.js"></script>
+			<script type="text/javascript" src="classDrawers.js"></script>
+			<script type="text/javascript" src="inputEvents.js"></script>
+			<script type="text/javascript" src="gameEngine.js"></script>
+			<script type="text/javascript" src="entities.js"></script>
+			<script type="text/javascript" src="PhysicsEngineClass.js"></script>
+		<title>Pinabll Game</title>
+<script type="text/javascript">
+	var canvas_background = null;
+	var context = null;
+	
+	var canvas = null;
+	var context2 = null;
+	var Background_Image = new Image();
+	
+	var setup = function() {
+		var body = document.getElementById("body");
+		var canvas = document.createElement("canvas");
+		var context = canvas.getContext("2d");
+		this.context = context;
+	
+		var canvas2 = document.createElement("canvas");
+		var context2 = canvas.getContext("2d");
+		this.context2 = context2;
+		
+		canvasWidth=window.innerWidth;
+		canvasHeight=window.innerHeight;
+		
+		if(canvasWidth>canvasHeight){
+			canvas.width = canvasHeight;
+			canvas.height = canvasHeight;
+			$("#container").css({"width":canvasHeight+"px","height":canvasHeight+"px"})
+		}else{
+			canvas.width = canvasWidth;
+			canvas.height = canvasWidth;
+			$("#container").css({"width":canvasWidth+"px","height":canvasWidth+"px"})
+		}
+		canvas2.width = canvas.width;
+		canvas2.height = canvas.height
+		
+		this.canvas_background = canvas;
+		this.canvas = canvas2;
+		$('#container').css("margin","auto");
+		document.getElementById('container').appendChild(canvas);
+		document.getElementById('container').appendChild(canvas2);
+		for( i=0; i<document.getElementsByTagName("canvas").length; i++ ){
+			document.getElementsByTagName("canvas")[i].setAttribute("id","cnvs"+i);
+			$('#cnvs'+i).css({"margin-right":-canvas.width,"position":"relative","float":"left","z-index":i});
+		}
+		
+		xhrGet("../PinballGame/pinballsheet_fixnumbers.json", function(){
+			parseJSON = JSON.parse(this.responseText);
+			gSpriteSheet.parseAtlasDefinition(this.responseText);
+			return parseJSON;
+		});
+		
+		var img = new Image();
+		var pngImg = new Image();
+		/////////////////////////////
+		img.onload = onImageLoad();
+		pngImg.onload = onImageLoad();
+		/////////////////////////////////////////////////////
+		img.src = "../PinballGame/images/playingfield-image.png";
+		pngImg.src = "../PinballGame/pinballsheet_fixnumbers.png";
+		
+		gSpriteSheet.load(pngImg.src);
+		Background_Image = img;
+		
+		gGameEngine.setup();
+	};
+	var onImageLoad = function(){
+		console.log("image loaded ");
+	};
+	var xhrGet = function(requireURI, callback){
+		var xhr = new XMLHttpRequest();
+		xhr.open("GET", requireURI, true);
+		xhr.onload = callback;
+		xhr.send();
+	}
+</script>
+	</head>
+	<body id="body">
+		<div id="BOX" style="width:100%;height:100%;">
+			<div id="container"></div>
+		</div>
+		<span id="hidden"></span>
+<script type="text/javascript">
+	setup();
+	$(window).load(function(){
+		console.log("loading now");
+	
+			var bumper = gGameEngine.spawnEntity('Bumper');	
+			var ramp = gGameEngine.spawnEntity('Power One');
+			var shield = gGameEngine.spawnEntity('Power Two');
+			var addrenaline = gGameEngine.spawnEntity('Power Three');
+			var energy = gGameEngine.spawnEntity('Power Four');
+			var fake = gGameEngine.spawnEntity('Power Five');
+			var hide = gGameEngine.spawnEntity('Power Six');
+			var pinball = gGameEngine.spawnEntity('pinball');
+			
+			
+			context.drawImage(Background_Image, 0, 0, canvas_background.width, canvas_background.height);
+			drawSprite(bumper.entityDef.id, canvas.width*0.35,canvas.height*0.783, canvas.width*0.09, canvas.height*0.02);
+			drawSprite(ramp.entityDef.id,canvas.width*0.25,canvas.height*0.8, canvas.width*0.1, canvas.height*0.1);
+			drawSprite(shield.entityDef.id,canvas.width*0.45,canvas.height*0.8, canvas.width*0.1, canvas.height*0.1);
+			drawSprite(addrenaline.entityDef.id,canvas.width*0.65,canvas.height*0.8, canvas.width*0.1, canvas.height*0.1);
+			drawSprite(energy.entityDef.id,canvas.width*0.35,canvas.height*0.9, canvas.width*0.1, canvas.height*0.1);
+			drawSprite(fake.entityDef.id,canvas.width*0.45,canvas.height*0.9, canvas.width*0.1, canvas.height*0.1);
+			drawSprite(hide.entityDef.id,canvas.width*0.55,canvas.height*0.9, canvas.width*0.1, canvas.height*0.1);	
+				
+				pinball.entityDef.x = canvas.width/2;
+				pinball.entityDef.y = canvas.height/2;
+				pinball.entityDef.halfWidth = canvas.width*(0.01/2);
+				pinball.entityDef.halfHeight = canvas.height*(0.01/2);
+			var pinballObj = gPhysicsEngine.addBody(pinball.entityDef);
+			gGameEngine.entities[7].body = pinballObj;
+				gPhysicsEngine.pinballSpwnSpeed(pinballObj);
+			drawSprite(pinball.entityDef.id, canvas.width/2, canvas.height/2, 0,0);
+				
+				pinball.entityDef.x = gPhysicsEngine.getPosX(pinballObj);
+				pinball.entityDef.y = gPhysicsEngine.getPosY(pinballObj);
+				gGameEngine.update();
+			
+	});
+</script>
+
+	</body>
+</html>
